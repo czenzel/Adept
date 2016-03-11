@@ -110,7 +110,8 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StateManager.cs" />
+    <Compile Include="Exceptions\RegistrationExistsException.cs" />
+    <Compile Include="SynchronizationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Microsoft.Adept.StateSync.rd.xml" />
   </ItemGroup>
