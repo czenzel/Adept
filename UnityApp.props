@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)UnityLib.props" />
+  <ItemGroup>
+    <Reference Include="UnityPlayer">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(UnityPlayersDir)\UAP\$(PlatformTarget)\$(Configuration)\UnityPlayer.winmd</HintPath>
+    </Reference>
+    <Reference Include="WinRTBridge">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(UnityPlayersDir)\UAP\$(PlatformTarget)\$(Configuration)\WinRTBridge.winmd</HintPath>
+    </Reference>
+    <Reference Include="BridgeInterface">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(UnityPlayersDir)\UAP\$(PlatformTarget)\$(Configuration)\BridgeInterface.winmd</HintPath>
+    </Reference>
+    <Reference Include="UnityEngineDelegates">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(UnityPlayersDir)\UAP\$(PlatformTarget)\$(Configuration)\UnityEngineDelegates.winmd</HintPath>
+    </Reference>
+    <Reference Include="UnityEngineProxy">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(UnityPlayersDir)\UAP\$(PlatformTarget)\$(Configuration)\UnityEngineProxy.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

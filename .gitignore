@@ -30,6 +30,10 @@ bld/
 # Packaging content OK
 ![Pp]ackaging/Content/**
 
+# Always get Unity root tools
+![U]nity/**
+
+
 # Visual Studo 2015 cache/options directory
 .vs/
 

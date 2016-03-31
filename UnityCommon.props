@@ -1,0 +1,9 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <UnityInstallationDir>C:\Program Files\Unity\Editor</UnityInstallationDir>
+        <UnitySolutionDir>$(SolutionDir)Unity</UnitySolutionDir>
+        <UnityWSAToolsDir>$(UnitySolutionDir)\Tools</UnityWSAToolsDir>
+        <UnityUnprocessedDir>$(UnitySolutionDir)\Unprocessed</UnityUnprocessedDir>
+        <UnityPlayersDir>$(UnitySolutionDir)\Players</UnityPlayersDir>
+    </PropertyGroup>
+</Project>

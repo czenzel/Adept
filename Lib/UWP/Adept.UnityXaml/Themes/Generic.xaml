@@ -1,0 +1,28 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Adept.UnityXaml">
+
+    <Style TargetType="local:UnityView" >
+        <Setter Property="Background" Value="#222C37" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="PlaceholderSource" Value="Assets/SplashScreen.png" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:UnityView">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <SwapChainPanel x:Name="SwapPanel">
+                            <Grid x:Name="PlaceholderElement" >
+                                <Image Source="{TemplateBinding PlaceholderSource}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                            </Grid>
+                        </SwapChainPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
