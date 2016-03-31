@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(SolutionDir)UnityApp.props" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(SolutionDir)UnityApp.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -175,6 +175,18 @@
     </Compile>
     <Content Include="Properties\Default.rd.xml">
     </Content>
+    <Reference Include="UnityEngine">
+      <HintPath>.\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="WinRTLegacy">
+      <HintPath>.\WinRTLegacy.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>.\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>.\UnityEngine.Networking.dll</HintPath>
+    </Reference>
     <Content Include="Data\**" />
   </ItemGroup>
   <ItemGroup>
@@ -187,9 +199,6 @@
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
-  <ItemGroup>
-    <UnprocessedFile Include="$(UnityUnprocessedDir)\*" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Lib\UWP\Adept.UnityXaml\Adept.UnityXaml.csproj">
       <Project>{1b208b66-0efb-4a8d-99bb-3b649d0d0df1}</Project>
