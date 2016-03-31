@@ -33,6 +33,9 @@ bld/
 # Always get Unity root tools
 ![U]nity/**
 
+# Always ignore Unity Library and Temp folders
+**/[Ll]ibrary/*
+**/[Tt]emp/
 
 # Visual Studo 2015 cache/options directory
 .vs/
