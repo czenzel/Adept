@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.System;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     /// <summary>
     /// Represents a binding between a keyboard key and an action.

@@ -30,7 +30,7 @@ Copyright (c) Microsoft. All rights reserved.
     http://go.microsoft.com/fwlink/?LinkID=391919
 -->
 <Directives xmlns="http://schemas.microsoft.com/netfx/2013/01/metadata">
-  <Library Name="Microsoft.Adept.StateSync">
+  <Library Name="Adept.StateSync">
 
   	<!-- add directives for your library here -->
 

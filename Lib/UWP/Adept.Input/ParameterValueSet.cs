@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     public class ParameterValueSet : Collection<ParameterValue>
     {

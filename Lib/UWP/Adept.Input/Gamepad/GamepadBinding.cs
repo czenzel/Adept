@@ -5,15 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Gaming.Input;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     /// <summary>
-    /// Supplies a value to a parameter of an action.
+    /// A class that maps <see cref="Gamepad"/> input to application actions.
     /// </summary>
-    public class ParameterValue
+    public class GamepadBinding
     {
-        public string Name { get; set; }
-        public object Value { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Adept.StateSync
+namespace Adept.StateSync
 {
     /// <summary>
     /// Synchronizes object state across devices and application instances.
@@ -33,7 +33,29 @@ namespace Microsoft.Adept.StateSync
         #region Overrides / Event Handlers
         private void Registration_PropertyChanged(SyncRegistration sender, PropertyChangedEventArgs e)
         {
+            // Get the actual registered object
+            var source = sender.Instance;
 
+            // Get the property from the sender
+            var property = source.GetType().GetProperty(e.PropertyName);
+
+            // Look for a strategy
+            var strategy = property.GetCustomAttribute<PropertyStrategyAttribute>(true);
+
+            // If strategy was found, execute it
+            if (strategy != null)
+            {
+                // Create the message
+                SyncMessage message = new SyncMessage()
+                {
+                    SyncId = sender.Id
+                };
+
+                // Ask the strategy to add the actions
+                strategy.AddActions(message, source, property);
+
+                // TODO: Send the message
+            }
         }
         #endregion // Overrides / Event Handlers
 

@@ -10,7 +10,7 @@ using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     /// <summary>
     /// A class that maps <see cref="Gamepad"/> input to application actions.

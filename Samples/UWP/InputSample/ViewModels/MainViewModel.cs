@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 //
 using GalaSoft.MvvmLight;
-using Microsoft.Adept.Input;
+using Adept.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;

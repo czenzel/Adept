@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     /// <summary>
     /// An action that can be triggered by a form of input.

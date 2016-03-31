@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Adept.Input
+namespace Adept.Input
 {
     public class MethodAction : IInputAction
     {
