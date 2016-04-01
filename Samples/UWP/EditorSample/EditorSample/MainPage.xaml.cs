@@ -1,5 +1,6 @@
 ﻿using Adept.UnityXaml;
 using System;
+using System.Collections;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,14 +21,23 @@ namespace EditorSample
 
         private async void CubeButton_Click(object sender, RoutedEventArgs e)
         {
-            await Unity.LoadSceneAsync("CubeScene");
+            await UnityHelpers.LoadSceneAsync("CubeScene");
             await new MessageDialog("Loaded").ShowAsync();
+        }
+
+        private IEnumerator DoSomething()
+        {
+            UnityEngine.Debug.Log("Starting Wait...");
+            yield return new UnityEngine.WaitForSeconds(5);
+            UnityEngine.Debug.Log("Done with Wait...");
         }
 
         private async void Sphere_Click(object sender, RoutedEventArgs e)
         {
-            await Unity.LoadSceneAsync("SphereScene");
+            await UnityHelpers.LoadSceneAsync("SphereScene");
             await new MessageDialog("Loaded").ShowAsync();
+            await UnityBridge.Instance.InvokeAsync(()=> DoSomething());
+            await new MessageDialog("Did Something").ShowAsync();
         }
     }
 }

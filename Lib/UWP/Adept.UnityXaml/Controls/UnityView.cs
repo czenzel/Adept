@@ -38,11 +38,8 @@ namespace Adept.UnityXaml
         #endregion // Dependency Property Definitions
 
         #region Member Variables
-        private AppCallbacks appCallbacks;
-        private WinRTBridge.WinRTBridge bridge;
-        private TaskCompletionSource<bool> initializedSource;
+        private UnityBridge bridge;
         private UIElement placeholderElement;
-        private TaskCompletionSource<bool> renderingSource;
         private SwapChainPanel swapPanel;
         #endregion // Member Variables
 
@@ -53,68 +50,17 @@ namespace Adept.UnityXaml
         public UnityView()
         {
             this.DefaultStyleKey = typeof(UnityView);
-            initializedSource = new TaskCompletionSource<bool>();
-            renderingSource = new TaskCompletionSource<bool>();
         }
         #endregion // Constructors
 
-        #region Internal Methods
-        private void LoadUnity()
-        {
-            // Get callbacks singleton
-            appCallbacks = AppCallbacks.Instance;
-
-            // Setup scripting bridge
-            bridge = new WinRTBridge.WinRTBridge();
-            appCallbacks.SetBridge(bridge);
-
-            // Subscribe to events in order to forward
-            appCallbacks.Initialized += AppCallbacks_Initialized;
-            appCallbacks.RenderingStarted += AppCallbacks_RenderingStarted;
-
-            // Not sure if we should always do this, never do this or make it an option
-            appCallbacks.SetKeyboardTriggerControl(this);
-
-            // Wire up to swap panel
-            appCallbacks.SetSwapChainPanel(swapPanel);
-
-            // Leaving this for now since it handles visibility, closing etc. 
-            // Hoping it doesn't impact rendering by listening to size changed.
-            appCallbacks.SetCoreWindowEvents(Window.Current.CoreWindow);
-
-            // Might optionally move this to another Init method or something
-            appCallbacks.InitializeD3DXAML();
-        }
-        #endregion // Internal Methods
 
         #region Overrides / Event Handlers
-        private void AppCallbacks_Initialized()
-        {
-            // Complete the task
-            initializedSource.SetResult(true);
-
-            // If event subscribers, notify
-            if (Initialized != null)
-            {
-                Initialized(this, EventArgs.Empty);
-            }
-        }
-
-        private void AppCallbacks_RenderingStarted()
+        private void Bridge_RenderingStarted(object sender, EventArgs e)
         {
             // Hide the placeholder element(s)
             if (placeholderElement != null)
             {
                 placeholderElement.Visibility = Visibility.Collapsed;
-            }
-
-            // Complete the task
-            renderingSource.SetResult(true);
-
-            // If event subscribers, notify
-            if (RenderingStarted != null)
-            {
-                RenderingStarted(this, EventArgs.Empty);
             }
         }
 
@@ -135,101 +81,17 @@ namespace Adept.UnityXaml
             // Panel found. If not in design mode, load Unity.
             if (!Windows.ApplicationModel.DesignMode.DesignModeEnabled)
             {
-                LoadUnity();
+                // Get the bridge
+                bridge = UnityBridge.Instance;
+
+                // Subscribe to bridge events
+                bridge.RenderingStarted += Bridge_RenderingStarted;
+
+                // Initialize Unity
+                bridge.Initialize(this, swapPanel);
             }
         }
         #endregion // Overrides / Event Handlers
-
-        #region Public Methods
-        /// <summary>
-        /// Invokes the specified action on Unity's application thread.
-        /// </summary>
-        /// <param name="action">
-        /// The action to perform.
-        /// </param>
-        /// <param name="waitUntilDone">
-        /// <c>true</c> if the Task should continue until the operation has completed; otherwise the 
-        /// Task will complete when the action has been scheduled for execution in Unity.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task"/> that represents the operation.
-        /// </returns>
-        /// <remarks>
-        /// This method is required to interact with Unity scripts and the Unity engine in general.
-        /// </remarks>
-        public async Task InvokeAsync(Action action, bool waitUntilDone = true)
-        {
-            // Wait for initialization to complete if it hasn't already
-            if (!initializedSource.Task.IsCompleted)
-            {
-                await initializedSource.Task;
-            }
-
-            // Which path is based on whether or not we're waiting for completion
-            if (!waitUntilDone)
-            {
-                // Invoke on Unity's thread but don't wait
-                appCallbacks.InvokeOnAppThread(() => action(), false);
-            }
-            else
-            {
-                // Same thing, but kick off as a Task
-                await Task.Run(() =>
-                {
-                    // Invoke on Unity's thread
-                    appCallbacks.InvokeOnAppThread(() => action(), true);
-                });
-            }
-        }
-
-        /// <summary>
-        /// Invokes the specified function on Unity's application thread.
-        /// </summary>
-        /// <typeparam name="T">
-        /// The type of value returned by the function.
-        /// </typeparam>
-        /// <param name="func">
-        /// The function to perform.
-        /// </param>
-        /// <param name="waitUntilDone">
-        /// <c>true</c> if the Task should continue until the operation has completed; otherwise the 
-        /// Task will complete when the action has been scheduled for execution in Unity.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task"/> that yields the result of the operation.
-        /// </returns>
-        /// <remarks>
-        /// This method is required to interact with Unity scripts and the Unity engine in general.
-        /// </remarks>
-        public async Task<T> InvokeAsync<T>(Func<T> func, bool waitUntilDone = true)
-        {
-            T result = default(T);
-            await InvokeAsync(() => { result = func(); }, waitUntilDone);
-            return result;
-
-        }
-
-        /// <summary>
-        /// Loads the scene with the specified name.
-        /// </summary>
-        /// <param name="sceneName">
-        /// The name of the scene to load.
-        /// </param>
-        /// <param name="progress">
-        /// An optional progress handler to receive notifications during the load.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task"/> that represents the operation.
-        /// </returns>
-        public Task LoadSceneAsync(string sceneName, IProgress<float> progress = null)
-        {
-            // Invoke on Unity thread. Don't wait for completion as we'll use the task created during scheduling.
-            return InvokeAsync(() =>
-            {
-                return SceneManager.LoadSceneAsync(sceneName).AsTask(progress);
-            }, false);
-        }
-        #endregion // Public Methods
 
         #region Public Properties
         /// <summary>
@@ -250,17 +112,5 @@ namespace Adept.UnityXaml
             }
         }
         #endregion // Public Properties
-
-        #region Public Events
-        /// <summary>
-        /// Occurs when the Unity Engine has initialized.
-        /// </summary>
-        public event EventHandler Initialized;
-
-        /// <summary>
-        /// Occurs when the Unity Engine has started rendering frames.
-        /// </summary>
-        public event EventHandler RenderingStarted;
-        #endregion // Public Events
     }
 }

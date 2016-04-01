@@ -112,8 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\UnityView.cs" />
-    <Compile Include="Extensions\UnityExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnityBridge.cs" />
+    <Compile Include="UnityHelpers.cs" />
     <EmbeddedResource Include="Properties\Adept.UnityXaml.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -122,6 +123,7 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
