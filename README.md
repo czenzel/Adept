@@ -21,11 +21,11 @@ Adept offers several key components that help deliver the scenarios outlined abo
 
 ## Xaml Unity "Control" ##
 ![Xaml Control](Doc/XamlUnity.png)
-Allows an entire Unity application to be run as an "island" within a XAMl application. Full interaction is supported between the two environments including the ability to run Unity coroutines in the XAML app and treat them as awaitable Tasks. Unity AsyncActions are event converted to Tasks that supply progress reports to the hosting xaml.
+Allows an entire Unity application to be run as an "island" within a XAMl application. Full interaction is supported between the two environments including the ability to run Unity coroutines in the XAML app and treat them as awaitable Tasks. Unity AsyncActions are also converted to Tasks that supply progress reports to the hosting xaml application.
 
 ## Unity Data Binding and Templates ##
 ![Unity Binding](Doc/UnityBinding.png)
-Adept offers full two-way data binding for Unity UI and even allows XAML-like data templates in Unity using prefabs. The binding system is also extensible so binding doesn't have to involve Unity UI. For example, a custom binder might monitor a string property and use it to load a named mesh. These features allows the MVVM pattern to be used in Unity and allow ViewModels (and therefore scenarios) to be shared between XAML and Unity. To see this feature in action, check out [this video](https://youtu.be/MrZd3Ldks14).
+Adept offers full two-way data binding for Unity UI and even allows XAML-like data templates in Unity using prefabs. The binding system is also extensible so leveraging Unity UI isn't a requirement. For example, a custom binder might monitor a string property and use it to load a named model. These features allows the MVVM pattern to be used in Unity and allows ViewModels (and therefore scenarios) to be shared with XAML apps. To see this feature in action, check out [this video](https://youtu.be/MrZd3Ldks14).
 
 ## Unified Input ##
 ![Unified Input](Doc/UnifiedInput.png)
