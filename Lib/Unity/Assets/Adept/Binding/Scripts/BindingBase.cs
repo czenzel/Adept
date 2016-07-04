@@ -4,8 +4,8 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
-using System.Windows.Data;
 using UnityEngine;
+using Windows.UI.Xaml.Data;
 
 namespace Adept.Unity
 {
@@ -44,13 +44,13 @@ namespace Adept.Unity
     }
 
     /// <summary>
-    /// Represents a binding between a data item and another item item.
+    /// Represents a binding between a data item and another item.
     /// </summary>
     public class BindingBase : MonoBehaviour
     {
         #region Member Variables
         private IValueConverter converter;
-        private CultureInfo converterCulture;
+        private string converterLanguage = string.Empty;
         private object converterParameter;
         private bool isInitialized;
         private object source;
@@ -233,9 +233,6 @@ namespace Adept.Unity
             // Try to get members if not already obtained
             TryGetMembers();
 
-            // Which culture?
-            CultureInfo culture = (converterCulture ?? CultureInfo.CurrentUICulture);
-
             // Which member and object
             MemberInfo setMember = null;
             object setObject = null;
@@ -269,10 +266,10 @@ namespace Adept.Unity
                         switch (direction)
                         {
                             case BindingDirection.SourceToTarget:
-                                value = converter.Convert(value, targetType, converterParameter, culture);
+                                value = converter.Convert(value, targetType, converterParameter, converterLanguage);
                                 break;
                             case BindingDirection.TargetToSource:
-                                value = converter.ConvertBack(value, targetType, converterParameter, culture);
+                                value = converter.ConvertBack(value, targetType, converterParameter, converterLanguage);
                                 break;
                         }
                     }
@@ -328,22 +325,28 @@ namespace Adept.Unity
         }
 
         /// <summary>
-        /// Gets or sets the culture to be used by the converter.
+        /// Gets or sets a value that names the language to pass to any converter specified 
+        /// by the Converter property.
         /// </summary>
         /// <remarks>
-        /// If ConverterCulture is null, CultureInfo.CurrentUICulture is used.
+        /// If a value for ConverterLanguage is specified, this value is used for the language 
+        /// value when invoking the converter logic. Specifically, this provides the value of 
+        /// the language parameter of the Convert or ConvertBack methods of the specific 
+        /// converter that is requested with the Converter property. By default and in the 
+        /// absence of ConverterLanguage being set, the value passed for language is an 
+        /// empty string.
         /// </remarks>
-        public CultureInfo ConverterCulture
+        public string ConverterLanguage
         {
             get
             {
-                return converterCulture;
+                return converterLanguage;
             }
             set
             {
-                if (converterCulture != value)
+                if (converterLanguage != value)
                 {
-                    converterCulture = value;
+                    converterLanguage = value;
                     ApplyBinding(BindingDirection.SourceToTarget);
                 }
             }

@@ -1,8 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using System;
-using System.Globalization;
-using System.Windows.Data;
+using Windows.UI.Xaml.Data;
 
 namespace Adept.Unity
 {
@@ -11,14 +10,50 @@ namespace Adept.Unity
     /// </summary>
     public class ConvertableValueConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        static private IFormatProvider TryGetFormatProvider(string language)
         {
-            return System.Convert.ChangeType(value, targetType, culture);
+            // Placeholder
+            IFormatProvider provider = null;
+
+            // Must have a language
+            if (!string.IsNullOrEmpty(language))
+            {
+                // Try to load a culture
+                try
+                {
+                    provider = new System.Globalization.CultureInfo(language);
+                }
+                catch (Exception) { }
+            }
+
+            // Done
+            return provider;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return System.Convert.ChangeType(value, targetType, culture);
+            var provider = TryGetFormatProvider(language);
+            if (provider != null)
+            {
+                return System.Convert.ChangeType(value, targetType, provider);
+            }
+            else
+            {
+                return System.Convert.ChangeType(value, targetType);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            var provider = TryGetFormatProvider(language);
+            if (provider != null)
+            {
+                return System.Convert.ChangeType(value, targetType, provider);
+            }
+            else
+            {
+                return System.Convert.ChangeType(value, targetType);
+            }
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 #if !WINDOWS_UWP
+using System;
 using System.Globalization;
 
-namespace System.Windows.Data
+namespace Windows.UI.Xaml.Data
 {
     /// <summary>
     /// Exposes methods that allow modifying the data as it passes through the binding engine.
@@ -22,13 +23,13 @@ namespace System.Windows.Data
         /// <param name="parameter">
         /// An optional parameter to be used in the converter logic.
         /// </param>
-        /// <param name="culture">
-        /// The culture of the conversion.
+        /// <param name="language">
+        /// The language of the conversion.
         /// </param>
         /// <returns>
         /// The value to be passed to the target property.
         /// </returns>
-        Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture);
+        Object Convert(Object value, Type targetType, Object parameter, string language);
 
         /// <summary>
         /// Converts a value.
@@ -42,13 +43,13 @@ namespace System.Windows.Data
         /// <param name="parameter">
         /// The converter parameter to use.
         /// </param>
-        /// <param name="culture">
-        /// The culture to use in the converter.
+        /// <param name="language">
+        /// The language of the conversion.
         /// </param>
         /// <returns>
         /// A converted value.
         /// </returns>
-        Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture);
+        Object ConvertBack(Object value, Type targetType, Object parameter, string language);
     }
 }
 #endif // !WINDOWS_UWP

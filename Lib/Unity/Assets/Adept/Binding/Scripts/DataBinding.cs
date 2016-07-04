@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Adept.Unity
 {
     /// <summary>
-    /// Represents a binding between a data item and another item item.
+    /// Represents a binding between a data item and another item.
     /// </summary>
     [AddComponentMenu("Binding/Data Binding", 51)]
     public class DataBinding : BindingBase
