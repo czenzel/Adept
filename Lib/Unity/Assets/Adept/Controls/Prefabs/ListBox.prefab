@@ -78,6 +78,7 @@ GameObject:
   - 224: {fileID: 22498292}
   - 222: {fileID: 22298292}
   - 114: {fileID: 11498288}
+  - 114: {fileID: 114000012705684536}
   m_Layer: 5
   m_Name: ListBox
   m_TagString: Untagged
@@ -173,7 +174,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d4ec49fbe4b49c54bab4a536474985c5, type: 3}
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -200,7 +201,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d6bc2f90033668f488aa8ebbf3dece89, type: 3}
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -246,8 +247,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11498296}
   m_HandleRect: {fileID: 22498296}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.96704805
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -265,8 +266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fac38a12b2ffdc4dbf523580c44c38c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemContainerTemplate: {fileID: 198286}
-  itemsPanel: {fileID: 0}
+  itemContainerTemplate: {fileID: 171236, guid: 80eacf15647d2854399bfaf8136d1639,
+    type: 2}
+  itemsPanel: {fileID: 22498284}
   itemTemplate: {fileID: 0}
 --- !u!114 &11498290
 MonoBehaviour:
@@ -357,7 +359,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: a53d4ccf31bbcc844b8b460f5e1fd70b, type: 3}
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -544,3 +546,21 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 198292}
   m_IsPrefabParent: 1
+--- !u!114 &114000012705684536
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 198292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee7ed8107953f7a48879d0975517ae4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  converterLanguage: 
+  _converterParameter: 
+  _converter: {fileID: 0}
+  mode: 0
+  _source: {fileID: 0}
+  _sourceMemberName: 
+  itemsControl: {fileID: 11498288}

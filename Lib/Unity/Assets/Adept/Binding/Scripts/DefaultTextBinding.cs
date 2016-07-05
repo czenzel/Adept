@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 namespace Adept.Unity
 {
+    /// <summary>
+    /// A binding between a data item and a <see cref="Text"/> UI control.
+    /// </summary>
+    /// <remarks>
+    /// This binding uses a <see cref="DefaultTextConverter"/> by default.
+    /// </remarks>
     public class DefaultTextBinding : BindingBase
     {
         #region Inspector Items

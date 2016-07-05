@@ -5,6 +5,9 @@ using Windows.UI.Xaml.Data;
 
 namespace Adept.Unity
 {
+    /// <summary>
+    /// A converter that provides a value by calling value.ToString.
+    /// </summary>
     public class DefaultTextConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

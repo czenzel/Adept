@@ -6,40 +6,37 @@ using UnityEngine.UI;
 namespace Adept.Unity
 {
     /// <summary>
-    /// Represents a binding between a data item and an Input Field Control.
+    /// A binding between a data item and an <see cref="InputField"/> UI control.
     /// </summary>
     [AddComponentMenu("Binding/Input Field Binding", 53)]
-    public class InputFieldBinding : BindingBase
+    public class InputFieldBinding : TargetedBinding
     {
-        #region Inspector Items
-        [Tooltip("The input field that will represent the item.")]
-        public InputField inputField;
-
-        [Tooltip("The name of the field or property on the data item which will supply the value.")]
-        public string sourceMemberName;
-        #endregion // Inspector Items
+        #region Serialized Variables
+        [SerializeField]
+        [Tooltip("The input field that will participate in the binding.")]
+        private InputField inputField;
+        #endregion // Serialized Items
 
         #region Overrides / Event Handlers
-        protected override void Initialize()
+        protected override void Awake()
         {
-            SourceMemberName = sourceMemberName;
+            // Set mode to bi-directional
+            Mode = BindingMode.TwoWay;
+
+            // Set the target member to text
+            TargetMemberName = "text";
+
+            // Set the target
+            Target = inputField;
 
             if (inputField != null)
             {
-                // Set the target member to text
-                TargetMemberName = "text";
-
-                // Set the target
-                Target = inputField;
-
-                // Set mode to bi-directional
-                Mode = BindingMode.TwoWay;
-
                 // Subscribe to character change
                 inputField.onValueChanged.AddListener(OnInputChanged);
             }
 
-            base.Initialize();
+            // Pass to base
+            base.Awake();
         }
 
         private void OnInputChanged(string text)
@@ -51,9 +48,21 @@ namespace Adept.Unity
         }
         #endregion // Overrides / Event Handlers
 
-        private void Start()
+        #region Public Properties
+        /// <summary>
+        /// Gets or sets the <see cref="InputField"/> that will participate in the binding.
+        /// </summary>
+        public InputField InputField
         {
-            Initialize();
+            get
+            {
+                return inputField;
+            }
+            set
+            {
+                inputField = value;
+            }
         }
+        #endregion // Public Properties
     }
 }

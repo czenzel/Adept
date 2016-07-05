@@ -9,24 +9,49 @@ namespace Adept.Unity
     /// Represents a binding between a data item and a UI Control.
     /// </summary>
     [AddComponentMenu("Binding/Control Binding", 52)]
-    public class ControlBinding : DataBinding
+    public class ControlBinding : TargetedBinding
     {
-        #region Inspector Items
-        [Tooltip("The target control that the will receive updates.")]
-        public UIBehaviour control;
-        #endregion // Inspector Items
+        #region Serialized Variables
+        [SerializeField]
+        [Tooltip("The target control that will participate in the binding.")]
+        private UIBehaviour control;
+
+        [SerializeField]
+        [Tooltip("The name of the target member (property or field) that will participate in the binding.")]
+        private string _targetMemberName; // Inspector only.
+        #endregion // Serialized Variables
 
         #region Overrides / Event Handlers
-        protected override void Initialize()
+        protected override void Awake()
         {
+            // Convert inspector values to property values
+            TargetMemberName = _targetMemberName;
             Target = control;
-            base.Initialize();
+
+            // Pass to base
+            base.Awake();
         }
         #endregion // Overrides / Event Handlers
 
-        private void Start()
+        #region Public Properties
+        /// <summary>
+        /// Gets or sets the target control that will participate in the binding.
+        /// </summary>
+        public UIBehaviour Control
         {
-            Initialize();
+            get
+            {
+                return control;
+            }
+            set
+            {
+                if (control != value)
+                {
+                    control = value;
+                    Target = value;
+                }
+            }
         }
+        #endregion // Public Properties
     }
 }

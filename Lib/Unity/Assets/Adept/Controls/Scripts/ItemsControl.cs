@@ -287,19 +287,19 @@ namespace Adept.Unity
         /// <summary>
         /// Gets or sets the GameObject that represents the template for each items container.
         /// </summary>
-        [Tooltip("The GameObject that represents the template for each items container.")]
+        [Tooltip("Template for each items container. (Optional)")]
         public GameObject itemContainerTemplate;
 
         /// <summary>
         /// Gets or sets the Transform where child UI items should be added.
         /// </summary>
-        [Tooltip("The Transform where child UI items should be added.")]
+        [Tooltip("Panel where child items will be added. (Required)")]
         public Transform itemsPanel;
 
         /// <summary>
         /// Gets or sets the GameObject that represents the template for each item.
         /// </summary>
-        [Tooltip("The GameObject that represents the template for each item.")]
+        [Tooltip("Template for each item. (Optional)")]
         public GameObject itemTemplate;
         #endregion // Inspector Properties
     }

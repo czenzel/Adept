@@ -348,7 +348,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48af3dd7c78605447bdb5696b39d6a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemContainerTemplate: {fileID: 159764}
+  itemContainerTemplate: {fileID: 171236, guid: 80eacf15647d2854399bfaf8136d1639,
+    type: 2}
   itemsPanel: {fileID: 0}
   itemTemplate: {fileID: 0}
   selectedItemContainer: {fileID: 0}

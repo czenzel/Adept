@@ -6,7 +6,10 @@ using Windows.UI.Xaml.Data;
 
 namespace Adept.Unity
 {
-    public abstract class ValueConverter : MonoBehaviour, IValueConverter
+    /// <summary>
+    /// An abstract base class for a behavior that implements <see cref="IValueConverter"/>.
+    /// </summary>
+    public abstract class ConverterBehaviour : MonoBehaviour, IValueConverter
     {
         /// <summary>
         /// Modifies the source data before passing it to the target for display in the UI.
@@ -47,5 +50,32 @@ namespace Adept.Unity
         /// A converted value.
         /// </returns>
         public abstract object ConvertBack(object value, Type targetType, object parameter, string language);
+    }
+
+    /// <summary>
+    /// A class that wraps any IValueConverter as a behavior so it can be placed in the Unity scene tree.
+    /// </summary>
+    /// <typeparam name="TConverter">
+    /// The actual type that implements IValueConverter.
+    /// </typeparam>
+    public class ConverterBehavior<TConverter> : ConverterBehaviour where TConverter : IValueConverter, new()
+    {
+        #region Member Variables
+        private TConverter converter;
+        #endregion // Member Variables
+
+        #region Overrides / Event Handlers
+        public override object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (converter == null) { converter = new TConverter(); }
+            return converter.Convert(value, targetType, parameter, language);
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            if (converter == null) { converter = new TConverter(); }
+            return converter.ConvertBack(value, targetType, parameter, language);
+        }
+        #endregion // Overrides / Event Handlers
     }
 }

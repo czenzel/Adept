@@ -49,15 +49,35 @@ namespace Adept.Unity
     public class BindingBase : MonoBehaviour
     {
         #region Member Variables
-        private IValueConverter converter;
-        private string converterLanguage = string.Empty;
-        private object converterParameter;
+        private DataContext dataContext;
         private bool isInitialized;
         private object source;
         private MemberInfo sourceMember;
+        private string sourceMemberName;
         private object target;
         private MemberInfo targetMember;
+        private string targetMemberName;
+        private IValueConverter converter;
+        private object converterParameter;
         #endregion // Member Variables
+
+        #region Serialized Variables
+        [SerializeField]
+        [Tooltip("The language to pass to the converter.")]
+        private string converterLanguage = string.Empty;
+
+        [SerializeField]
+        [Tooltip("A parameter that can be used in the converter logic.")]
+        private string _converterParameter; // Inspector only. Stored as Object in converterParameter field during Initialize
+
+        [SerializeField]
+        [Tooltip("The converter that will be used to convert values during binding.")]
+        private ConverterBehaviour _converter; // Inspector only. Stored as IValueConverter in converter field during Initialize
+
+        [SerializeField]
+        [Tooltip("The direction of the data flow in the binding.")]
+        private BindingMode mode;
+        #endregion // Serialized Variables
 
         #region Internal Methods
         private void LogBindingException(object value, Type targetType, Exception ex)
@@ -135,28 +155,70 @@ namespace Adept.Unity
         private void TryGetMembers()
         {
             // Get source or target members if not already obtained
-            if (sourceMember == null)
+            if ((sourceMember == null) && (source != null) && (!string.IsNullOrEmpty(sourceMemberName)))
             {
-                sourceMember = source.GetMemeber(SourceMemberName);
+                sourceMember = source.GetMemeber(sourceMemberName);
+                if (sourceMember == null)
+                {
+                    Debug.LogWarningFormat("Source Member {0} could not be found on type {1}", sourceMemberName, source.GetType().Name);
+                }
             }
 
-            if (targetMember == null)
+            if ((targetMember == null) && (target != null) && (!string.IsNullOrEmpty(targetMemberName)))
             {
-                targetMember = target.GetMemeber(TargetMemberName);
+                targetMember = target.GetMemeber(targetMemberName);
+                if (targetMember == null)
+                {
+                    Debug.LogWarningFormat("Target Member {0} could not be found on type {1}", targetMemberName, target.GetType().Name);
+                }
             }
         }
         #endregion // Internal Methods
 
         #region Overridables / Event Triggers
-        protected virtual void Initialize()
+        protected virtual void Awake()
         {
-            if ((converter == null) && (valueConverter != null))
+            // Migrate inspector values to class values
+            if ((_converterParameter != null) && (converterParameter == null))
             {
-                Converter = valueConverter;
+                converterParameter = _converterParameter;
             }
 
+            if ((_converter != null) && (converter == null))
+            {
+                converter = _converter;
+            }
+
+            // We are now initialized
             isInitialized = true;
-            ApplyBinding(BindingDirection.SourceToTarget);
+        }
+
+        protected virtual void OnEnable()
+        {
+            // Try to get DataContext
+            dataContext = GetComponentInParent<DataContext>();
+
+            // If no data context found, warn and bail
+            if (dataContext == null)
+            {
+                Debug.LogWarningFormat("No DataContext could be found for {0}", GetType().Name);
+                return;
+            }
+
+            // Register with DataContext
+            dataContext.RegisterBinding(this);
+
+            // Treat as a source change
+            HandleSourceChanged(dataContext.Source);
+        }
+
+        protected virtual void OnDisable()
+        {
+            // If we have a DataContext, unregister
+            if (dataContext != null)
+            {
+                dataContext.UnregisterBinding(this);
+            }
         }
         #endregion // Overridables / Event Triggers
 
@@ -226,6 +288,14 @@ namespace Adept.Unity
 
             // Done
             return value;
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public virtual void HandleSourceChanged(object newSource)
+        {
+            PropSourceChanging(source, newSource, SourcePropertyChanged);
+            source = newSource;
+            ApplyBinding(BindingDirection.SourceToTarget);
         }
 
         public virtual void SetValue(BindingDirection direction, object value)
@@ -379,32 +449,43 @@ namespace Adept.Unity
         /// <summary>
         /// Gets or sets a value that indicates the direction of the data flow in the binding.
         /// </summary>
-        public BindingMode Mode { get; set; }
-
-        /// <summary>
-        /// Gets or sets the item that is the source of the binding.
-        /// </summary>
-        public object Source
+        public BindingMode Mode
         {
             get
             {
-                return source;
+                return mode;
             }
             set
             {
-                if (value != source)
-                {
-                    PropSourceChanging(source, value, SourcePropertyChanged);
-                    source = value;
-                    ApplyBinding(BindingDirection.SourceToTarget);
-                }
+                mode = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the name of the source member that will participate in the binding.
+        /// Gets or sets the name of the source member (property or field) that will participate in the binding.
         /// </summary>
-        public string SourceMemberName { get; set; }
+        public string SourceMemberName
+        {
+            get
+            {
+                return sourceMemberName;
+            }
+            set
+            {
+                // Ensure changing
+                if (sourceMemberName != value)
+                {
+                    // Store
+                    sourceMemberName = value;
+
+                    // Clear current source member
+                    sourceMember = null;
+
+                    // Apply the binding (which will attempt to recalculate source)
+                    ApplyBinding(BindingDirection.SourceToTarget);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the item that is the target of the binding.
@@ -427,14 +508,30 @@ namespace Adept.Unity
         }
 
         /// <summary>
-        /// Gets or sets the name of the target member that will participate in the binding.
+        /// Gets or sets the name of the target member (property or field) that will participate in the binding.
         /// </summary>
-        public string TargetMemberName { get; set; }
-        #endregion // Public Properties
+        public string TargetMemberName
+        {
+            get
+            {
+                return targetMemberName;
+            }
+            set
+            {
+                // Ensure changing
+                if (targetMemberName != value)
+                {
+                    // Store
+                    targetMemberName = value;
 
-        #region Inspector Properties
-        [Tooltip("The converter that will be used to convert values during binding.")]
-        public ValueConverter valueConverter;
-        #endregion // Inspector Properties
+                    // Clear current target member
+                    targetMember = null;
+
+                    // Apply the binding (which will attempt to recalculate target)
+                    ApplyBinding(BindingDirection.SourceToTarget);
+                }
+            }
+        }
+        #endregion // Public Properties
     }
 }
