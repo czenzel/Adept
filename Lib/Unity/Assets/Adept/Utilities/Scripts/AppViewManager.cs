@@ -203,56 +203,35 @@ namespace Adept
         #region Public Methods
         #if WINDOWS_UWP
         /// <summary>
-        /// Creates a new view and navigates to the specified page.
+        /// Creates an <see cref="AppViewInfo"/> from the current dispatcher.
         /// </summary>
-        /// <typeparam name="TPage">
-        /// The type of page to navigate to.
-        /// </typeparam>
         /// <param name="name">
         /// The name of the view.
         /// </param>
         /// <returns>
-        /// A new <see cref="AppViewInfo"/> that representes the view.
+        /// A <see cref="Task"/> that yields the <see cref="AppViewInfo"/> for the view in the current dispatcher.
         /// </returns>
-        static public async Task<AppViewInfo> CreateViewAsync<TPage>(string name) where TPage : Page
+        static public Task<AppViewInfo> CreateFromCurrentDispatcherAsync(string name)
         {
-            // Create a new view
-            var view = CoreApplication.CreateNewView();
-
-            // Using the new dispatcher, create a frame and show the page
-            await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, ()=>
-            {
-                // Create the frame
-                Frame frame = new Frame();
-                
-                // Navigate to the page
-                frame.Navigate(typeof(TPage), null);
-
-                // Show frame
-                var window = Window.Current;
-                window.Content = frame;
-                window.Activate();
-            });
-
-            // Create the view for the dispatcher that is now showing the page
-            return await CreateViewAsync(view.Dispatcher, name);
+            return CreateFromDispatcherAsync(name, Window.Current.Dispatcher);
         }
 
         /// <summary>
         /// Creates an <see cref="AppViewInfo"/> from the specified dispatcher.
         /// </summary>
-        /// <param name="dispatcher">
-        /// The dispatcher to get the view from.
-        /// </param>
         /// <param name="name">
         /// The name of the view.
+        /// </param>
+        /// <param name="dispatcher">
+        /// The dispatcher to get the view from.
         /// </param>
         /// <returns>
         /// A <see cref="Task"/> that yields the <see cref="AppViewInfo"/> for the current view in the dispatcher.
         /// </returns>
-        static public async Task<AppViewInfo> CreateViewAsync(CoreDispatcher dispatcher, string name)
+        static public async Task<AppViewInfo> CreateFromDispatcherAsync(string name, CoreDispatcher dispatcher)
         {
             // Validate 
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException(nameof(name));
             if (dispatcher == null) throw new ArgumentNullException(nameof(dispatcher));
 
             // Placeholders
@@ -277,53 +256,43 @@ namespace Adept
         }
 
         /// <summary>
-        /// Returns an existing view with the specified name if it exists; otherwise 
-        /// creates a new view and navigates to the specified page.
+        /// Creates a new view and navigates to the specified page.
         /// </summary>
-        /// <typeparam name="TPage">
-        /// The type of page to navigate to.
-        /// </typeparam>
         /// <param name="name">
         /// The name of the view.
+        /// </param>
+        /// <param name="viewType">
+        /// The type of page to navigate to.
         /// </param>
         /// <returns>
         /// A new <see cref="AppViewInfo"/> that representes the view.
         /// </returns>
-        static public Task<AppViewInfo> FindOrCreateViewAsync<TPage>(string name) where TPage : Page
+        static public async Task<AppViewInfo> CreateNewAsync(string name, Type viewType)
         {
-            if (views.Contains(name))
-            {
-                return Task.FromResult(views[name]);
-            }
-            else
-            {
-                return CreateViewAsync<TPage>(name);
-            }
-        }
+            // Validate
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException(nameof(name));
+            if (viewType == null) throw new ArgumentNullException(nameof(viewType));
 
-        /// <summary>
-        /// Returns an existing view with the specified name if it exists; otherwise 
-        /// creates an <see cref="AppViewInfo"/> from the specified dispatcher.
-        /// </summary>
-        /// <param name="dispatcher">
-        /// The dispatcher to get the view from.
-        /// </param>
-        /// <param name="name">
-        /// The name of the view.
-        /// </param>
-        /// <returns>
-        /// A <see cref="Task"/> that yields the <see cref="AppViewInfo"/> for the current view in the dispatcher.
-        /// </returns>
-        static public Task<AppViewInfo> FindOrCreateViewAsync(CoreDispatcher dispatcher, string name)
-        {
-            if (views.Contains(name))
+            // Create a new view
+            var view = CoreApplication.CreateNewView();
+
+            // Using the new dispatcher, create a frame and show the page
+            await view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                return Task.FromResult(views[name]);
-            }
-            else
-            {
-                return CreateViewAsync(dispatcher, name);
-            }
+                // Create the frame
+                Frame frame = new Frame();
+
+                // Navigate to the page
+                frame.Navigate(viewType, null);
+
+                // Show frame
+                var window = Window.Current;
+                window.Content = frame;
+                window.Activate();
+            });
+
+            // Create the view for the dispatcher that is now showing the page
+            return await CreateFromDispatcherAsync(name, view.Dispatcher);
         }
         #endif
         #endregion // Public Methods
