@@ -139,9 +139,12 @@ namespace Adept
         /// Visually replaces the current view with this view.
         /// </summary>
         /// <returns></returns>
-        public Task SwitchAsync()
+        public async Task SwitchAsync()
         {
-            return ApplicationViewSwitcher.SwitchAsync(this.view.Id).AsTask();
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                await ApplicationViewSwitcher.SwitchAsync(this.view.Id);
+            });
         }
 
         /// <summary>
@@ -151,9 +154,14 @@ namespace Adept
         /// <returns>
         /// A <see cref="Task"/> that <c>true</c> if the view window was shown; otherwise <c>false</c>.
         /// </returns>
-        public Task<bool> TryShowAsStandaloneAsync()
+        public async Task<bool> TryShowAsStandaloneAsync()
         {
-            return ApplicationViewSwitcher.TryShowAsStandaloneAsync(this.view.Id).AsTask();
+            bool success = false;
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                success = await ApplicationViewSwitcher.TryShowAsStandaloneAsync(this.view.Id);
+            });
+            return success;
         }
         #endif
         #endregion // Public Methods
