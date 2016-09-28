@@ -59,6 +59,9 @@ namespace Adept
             this.view = view;
             this.dispatcher = dispatcher;
             this.name = name;
+
+            // Subscribe to events for forwarding
+            this.view.Consolidated += View_Consolidated;
         }
         #endif
         #endregion // Constructors
@@ -138,12 +141,33 @@ namespace Adept
         /// <summary>
         /// Visually replaces the current view with this view.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A <see cref="Task"/> that represents the operation.
+        /// </returns>
         public async Task SwitchAsync()
         {
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
                 await ApplicationViewSwitcher.SwitchAsync(this.view.Id);
+            });
+        }
+
+        /// <summary>
+        /// Visually replaces the current view with this view.
+        /// </summary>
+        /// <param name="options">
+        /// Options for the display transition behaviors.
+        /// </param>
+        /// <returns>
+        /// A <see cref="Task"/> that represents the operation.
+        /// </returns>
+        public async Task SwitchAsync(ApplicationViewSwitchingOptions options)
+        {
+            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
+                var currentView = ApplicationView.GetForCurrentView();
+                var currentId = (currentView != null ? currentView.Id : 0);
+                await ApplicationViewSwitcher.SwitchAsync(this.view.Id, currentId, options);
             });
         }
 
@@ -166,6 +190,18 @@ namespace Adept
         #endif
         #endregion // Public Methods
 
+        #region Overrides / Event Handlers
+        #if WINDOWS_UWP
+        private void View_Consolidated(ApplicationView sender, ApplicationViewConsolidatedEventArgs args)
+        {
+            if (Consolidated != null)
+            {
+                Consolidated(this, EventArgs.Empty);
+            }
+        }
+        #endif
+        #endregion // Overrides / Event Handlers
+
         #region Public Properties
         #if WINDOWS_UWP
         /// <summary>
@@ -186,6 +222,14 @@ namespace Adept
         public ApplicationView View => view;
         #endif
         #endregion // Public Properties
+
+        #region Public Events
+        /// <summary>
+        /// Occurs when the window is removed from the list of 
+        /// recently used apps, or if the user executes a close gesture on it.
+        /// </summary>
+        public event EventHandler Consolidated;
+        #endregion // Public Events
     }
 
     /// <summary>
