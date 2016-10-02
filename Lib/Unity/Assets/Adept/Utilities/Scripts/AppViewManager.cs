@@ -155,19 +155,23 @@ namespace Adept
         /// <summary>
         /// Visually replaces the current view with this view.
         /// </summary>
+        /// <param name="fromView">
+        /// The view you are switching from.
+        /// </param>
         /// <param name="options">
         /// Options for the display transition behaviors.
         /// </param>
         /// <returns>
         /// A <see cref="Task"/> that represents the operation.
         /// </returns>
-        public async Task SwitchAsync(ApplicationViewSwitchingOptions options)
+        public async Task SwitchAsync(AppViewInfo fromView, ApplicationViewSwitchingOptions options)
         {
+            // From view MUST be passed
+            if (fromView == null) throw new ArgumentNullException(nameof(fromView));
+
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                var currentView = ApplicationView.GetForCurrentView();
-                var currentId = (currentView != null ? currentView.Id : 0);
-                await ApplicationViewSwitcher.SwitchAsync(this.view.Id, currentId, options);
+                await ApplicationViewSwitcher.SwitchAsync(this.view.Id, fromView.view.Id, options);
             });
         }
 
